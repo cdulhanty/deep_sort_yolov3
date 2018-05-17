@@ -216,7 +216,7 @@ def _main(args):
             all_layers.append(None)
             prev_layer = all_layers[-1]
             
-        elif section.startswith('maxpool):
+        elif section.startswith('maxpool'):
             size = int(cfg_parser[section]['size'])
             stride = int(cfg_parser[section]['stride'])
             all_layers.append(MaxPooling2D(pool_size=(size, size), 
