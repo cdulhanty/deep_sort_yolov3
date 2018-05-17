@@ -13,7 +13,7 @@ from collections import defaultdict
 import numpy as np
 from keras import backend as K
 from keras.layers import (Conv2D, Input, ZeroPadding2D, Add,
-                          UpSampling2D, Concatenate)
+                          UpSampling2D, Concatenate, MaxPooling2D)
 from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
@@ -88,9 +88,13 @@ def _main(args):
                          ) if 'net_0' in cfg_parser.sections() else 5e-4
     count = 0
     out_index = []
+    
     for section in cfg_parser.sections():
+      
         print('Parsing section {}'.format(section))
+        
         if section.startswith('convolutional'):
+          
             filters = int(cfg_parser[section]['filters'])
             size = int(cfg_parser[section]['size'])
             stride = int(cfg_parser[section]['stride'])
@@ -210,6 +214,14 @@ def _main(args):
         elif section.startswith('yolo'):
             out_index.append(len(all_layers)-1)
             all_layers.append(None)
+            prev_layer = all_layers[-1]
+            
+        elif section.startswith('maxpool):
+            size = int(cfg_parser[section]['size'])
+            stride = int(cfg_parser[section]['stride'])
+            all_layers.append(MaxPooling2D(pool_size=(size, size), 
+                                           strides=stride, 
+                                           padding='valid') #maybe 'same'
             prev_layer = all_layers[-1]
 
         elif section.startswith('net'):
