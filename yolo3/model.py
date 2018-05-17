@@ -165,7 +165,7 @@ def yolo_eval(yolo_outputs,
     input_shape = K.shape(yolo_outputs[0])[1:3] * 32
     boxes = []
     box_scores = []
-    for l in range(3):
+    for l in range(2):
         _boxes, _box_scores = yolo_boxes_and_scores(yolo_outputs[l],
             anchors[anchor_mask[l]], num_classes, input_shape, image_shape)
         boxes.append(_boxes)
@@ -223,9 +223,9 @@ def preprocess_true_boxes(true_boxes, input_shape, anchors, num_classes):
     true_boxes[..., 2:4] = boxes_wh/input_shape[::-1]
 
     m = true_boxes.shape[0]
-    grid_shapes = [input_shape//{0:32, 1:16, 2:8}[l] for l in range(3)]
+    grid_shapes = [input_shape//{0:32, 1:16, 2:8}[l] for l in range(2)]
     y_true = [np.zeros((m,grid_shapes[l][0],grid_shapes[l][1],len(anchor_mask[l]),5+num_classes),
-        dtype='float32') for l in range(3)]
+        dtype='float32') for l in range(2)]
 
     # Expand dim to apply broadcasting.
     anchors = np.expand_dims(anchors, 0)
@@ -253,7 +253,7 @@ def preprocess_true_boxes(true_boxes, input_shape, anchors, num_classes):
         best_anchor = np.argmax(iou, axis=-1)
 
         for t, n in enumerate(best_anchor):
-            for l in range(3):
+            for l in range(2):
                 if n in anchor_mask[l]:
                     i = np.floor(true_boxes[b,t,0]*grid_shapes[l][1]).astype('int32')
                     j = np.floor(true_boxes[b,t,1]*grid_shapes[l][0]).astype('int32')
@@ -328,11 +328,11 @@ def yolo_loss(args, anchors, num_classes, ignore_thresh=.5):
     y_true = args[3:]
     anchor_mask = [[6,7,8], [3,4,5], [0,1,2]]
     input_shape = K.cast(K.shape(yolo_outputs[0])[1:3] * 32, K.dtype(y_true[0]))
-    grid_shapes = [K.cast(K.shape(yolo_outputs[l])[1:3], K.dtype(y_true[0])) for l in range(3)]
+    grid_shapes = [K.cast(K.shape(yolo_outputs[l])[1:3], K.dtype(y_true[0])) for l in range(2)]
     loss = 0
     m = K.shape(yolo_outputs[0])[0]
 
-    for l in range(3):
+    for l in range(2):
         object_mask = y_true[l][..., 4:5]
         true_class_probs = y_true[l][..., 5:]
 
