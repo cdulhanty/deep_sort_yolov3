@@ -221,7 +221,7 @@ def _main(args):
             stride = int(cfg_parser[section]['stride'])
             all_layers.append(MaxPooling2D(pool_size=(size, size), 
                                            strides=stride, 
-                                           padding='valid')) #maybe 'same'
+                                           padding='valid')(prev_layer)) #maybe 'same'
             prev_layer = all_layers[-1]
 
         elif section.startswith('net'):
