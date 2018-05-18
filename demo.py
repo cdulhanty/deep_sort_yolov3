@@ -27,7 +27,7 @@ def main(yolo):
     args = parse_args()
             
     if args.nFrames < 1:
-        continue
+        sys.exit(0)
 
     # Definition of the parameters
     max_cosine_distance = 0.3
@@ -123,15 +123,20 @@ def main(yolo):
     f.close()
             
 def parse_args():
-    """Parse command line arguments.
+    """
+    Parse command line arguments.
     """
     parser = argparse.ArgumentParser(description="Arg. parser for yolov3 x deep_sort demo")
+    
     parser.add_argument(
         "--video",
         help="Path to video")
+    
     parser.add_argument(
         "--nFrames", help="Fraction of frames to run on",
+        default=1,
         required=False)
+    
     return parser.parse_args()
 
 if __name__ == '__main__':
