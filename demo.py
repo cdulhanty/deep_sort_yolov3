@@ -58,6 +58,10 @@ def main(yolo, files, nthFrames):
             writer.writerow(['frame_id', 'track_id' , 'x', 'y', 'w', 'h'])
             f.flush()
 
+            printIndex = 50
+            while nthFrame != 1 and printIndex / nthFrame == 0 :
+                printIndex += 1
+            
             frame_index = 0
             fps = 0.0
 
@@ -109,7 +113,10 @@ def main(yolo, files, nthFrames):
 
                 # write processed frame to video
                 videoWriter.write(frame)
-
+                                
+                if frame_index % printIndex == 0:
+                    print(frame_index)
+                    
             videoWriter.release()
             video_capture.release()
             f.close()
