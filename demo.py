@@ -44,7 +44,7 @@ def main(yolo):
     video_capture = cv2.VideoCapture(args.video)
     width = int(video_capture.get(3))
     height = int(video_capture.get(4))
-    vid_fps = int(video_capture.get(4)/float(args.nFrames))
+    vid_fps = int(video_capture.get(5)/float(args.nFrames))
 
     #setup output video
     outname = 'output_{}'.format(args.video)
