@@ -45,7 +45,6 @@ def main(yolo):
     width = int(video_capture.get(3))
     height = int(video_capture.get(4))
     vid_fps = int(video_capture.get(4)/float(args.nFrames))
-    vid_fps = 15
 
     #setup output video
     outname = 'output_{}'.format(args.video)
@@ -71,15 +70,11 @@ def main(yolo):
 
         ret, frame = video_capture.read()  # frame shape 640*480*3
         
-        print(ret)
-
         if ret != True:
             break;
 
         frame_index = frame_index + 1
         
-        print(args.nFrames)
-
         if args.nFrames > 1 and frame_index % args.nFrames == 0:
             continue
 
