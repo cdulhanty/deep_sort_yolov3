@@ -45,12 +45,14 @@ def main(yolo, files, nthFrames):
             video_capture = cv2.VideoCapture(file)
             width = int(video_capture.get(3))
             height = int(video_capture.get(4))
+            vid_fps = int(video_capture.get(5))
 
             #setup output video
             outname = 'output_{}'.format(file)
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            vid_fps = int(video_capture.get(5))/nthFrame
             videoWriter = cv2.VideoWriter(outname, fourcc, vid_fps, (width, height))
+            
+            print('file @' + str(vid_fps) + ' fps')
 
             # setup ouput csv 
             f = open('output_{}.csv'.format(file),'w')
