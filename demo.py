@@ -27,7 +27,7 @@ def main(yolo, files, nthFrames):
       
         for nthFrame in nthFrames:
         
-            if framerate < 1:
+            if nthFrame < 1:
                 continue
 
             # Definition of the parameters
