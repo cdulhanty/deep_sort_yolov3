@@ -115,4 +115,4 @@ def main(yolo, files, nthFrames):
             f.close()
 
 if __name__ == '__main__':
-    main(YOLO(), sys.args[1], sys.args[2])
+    main(YOLO(), sys.argv[1], sys.argv[2])
