@@ -68,15 +68,17 @@ def main(yolo):
     fps = 0.0
 
     while True:
-        
-        print('True')
 
         ret, frame = video_capture.read()  # frame shape 640*480*3
+        
+        print(ret)
 
         if ret != True:
             break;
 
         frame_index = frame_index + 1
+        
+        print(args.nFrames)
 
         if args.nFrames > 1 and frame_index % args.nFrames == 0:
             continue
