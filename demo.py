@@ -61,13 +61,15 @@ def main(yolo):
     f.flush()
 
     printIndex = 50
-    while args.nFrames != 1 and printIndex / args.nFrames == 0 :
+    while args.nFrames != 1 and printIndex % args.nFrames == 0 :
         printIndex += 1
 
     frame_index = 0
     fps = 0.0
 
     while True:
+        
+        print('True')
 
         ret, frame = video_capture.read()  # frame shape 640*480*3
 
