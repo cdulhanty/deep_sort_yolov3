@@ -26,6 +26,8 @@ def main(yolo, files, nthFrames):
     for file in files:
       
         for nthFrame in nthFrames:
+            
+            nthFrame = int(nthFrame)
         
             if nthFrame < 1:
                 continue
