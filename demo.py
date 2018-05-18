@@ -44,17 +44,17 @@ def main(yolo):
     video_capture = cv2.VideoCapture(args.video)
     width = int(video_capture.get(3))
     height = int(video_capture.get(4))
-    vid_fps = video_capture.get(cv2.CAP_PROP_FPS)/args.nFrames
+    vid_fps = int(video_capture.get(4)/float(args.nFrames))
 
     #setup output video
     outname = 'output_{}'.format(args.video)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     videoWriter = cv2.VideoWriter(outname, fourcc, vid_fps, (width, height))
 
-    print('file @' + str(vid_fps) + ' fps')
+    print(args.video +' @' + str(vid_fps) + ' fps')
 
     # setup ouput csv 
-    f = open('output_{}.csv'.format(file),'w')
+    f = open('output_{}.csv'.format(args.video),'w')
     writer = csv.writer(f, delimiter=',')
     writer.writerow(['frame_id', 'track_id' , 'x', 'y', 'w', 'h'])
     f.flush()
