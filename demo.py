@@ -27,92 +27,92 @@ def main(yolo, files, nthFrames):
       
         for nthFrame in nthFrames:
         
-        if framerate < 1:
-            continue
-
-        # Definition of the parameters
-        max_cosine_distance = 0.3
-        nn_budget = None
-        nms_max_overlap = 1.0
-
-        # deep_sort 
-        model_filename = 'model_data/mars-small128.pb'
-        encoder = gdet.create_box_encoder(model_filename,batch_size=1)
-        metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
-        tracker = Tracker(metric)
-
-        # open video file
-        video_capture = cv2.VideoCapture(file)
-        width = int(video_capture.get(3))
-        height = int(video_capture.get(4))
-        
-        #setup output video
-        outname = 'output_{}'.format(file)
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        vid_fps = int(video_capture.get(5))/nthFrame
-        videoWriter = cv2.VideoWriter(outname, fourcc, vid_fps, (width, height))
-        
-        # setup ouput csv 
-        f = open('output_{}.csv'.format(file),'w')
-        writer = csv.writer(f, delimiter=',')
-        writer.writerow(['frame_id', 'track_id' , 'x', 'y', 'w', 'h'])
-        f.flush()
-
-        frame_index = 0
-        fps = 0.0
-
-        while True:
-
-            ret, frame = video_capture.read()  # frame shape 640*480*3
-            
-            if ret != True:
-                break;
-            
-            frame_index = frame_index + 1
-
-            if nthFrame > 1 and frame_index % nthFrame == 0:
+            if framerate < 1:
                 continue
 
-            t1 = time.time()    
+            # Definition of the parameters
+            max_cosine_distance = 0.3
+            nn_budget = None
+            nms_max_overlap = 1.0
 
-            image = Image.fromarray(frame)
-            boxs = yolo.detect_image(image)
+            # deep_sort 
+            model_filename = 'model_data/mars-small128.pb'
+            encoder = gdet.create_box_encoder(model_filename,batch_size=1)
+            metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
+            tracker = Tracker(metric)
 
-            features = encoder(frame,boxs)
+            # open video file
+            video_capture = cv2.VideoCapture(file)
+            width = int(video_capture.get(3))
+            height = int(video_capture.get(4))
 
-            # score to 1.0 here
-            detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxs, features)]
+            #setup output video
+            outname = 'output_{}'.format(file)
+            fourcc = cv2.VideoWriter_fourcc(*'XVID')
+            vid_fps = int(video_capture.get(5))/nthFrame
+            videoWriter = cv2.VideoWriter(outname, fourcc, vid_fps, (width, height))
 
-            # Run non-maxima suppression.
-            boxes = np.array([d.tlwh for d in detections])
-            scores = np.array([d.confidence for d in detections])
-            indices = preprocessing.non_max_suppression(boxes, nms_max_overlap, scores)
-            detections = [detections[i] for i in indices]
+            # setup ouput csv 
+            f = open('output_{}.csv'.format(file),'w')
+            writer = csv.writer(f, delimiter=',')
+            writer.writerow(['frame_id', 'track_id' , 'x', 'y', 'w', 'h'])
+            f.flush()
 
-            # Call the tracker
-            tracker.predict()
-            tracker.update(detections)
+            frame_index = 0
+            fps = 0.0
 
-            for track in tracker.tracks:
-                
-                if track.is_confirmed() and track.time_since_update >1 :
+            while True:
+
+                ret, frame = video_capture.read()  # frame shape 640*480*3
+
+                if ret != True:
+                    break;
+
+                frame_index = frame_index + 1
+
+                if nthFrame > 1 and frame_index % nthFrame == 0:
                     continue
-                    
-                bbox = track.to_tlbr()
-                
-                cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,255,255), 2)
-                cv2.putText(frame, str(track.track_id),(int(bbox[0]), int(bbox[1])),0, 5e-3 * 200, (0,255,0),2)
 
-            for det in detections:
-                bbox = det.to_tlbr()
-                cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
+                t1 = time.time()    
 
-            # write processed frame to video
-            videoWriter.write(frame)
+                image = Image.fromarray(frame)
+                boxs = yolo.detect_image(image)
 
-        videoWriter.release()
-        video_capture.release()
-        f.close()
+                features = encoder(frame,boxs)
+
+                # score to 1.0 here
+                detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxs, features)]
+
+                # Run non-maxima suppression.
+                boxes = np.array([d.tlwh for d in detections])
+                scores = np.array([d.confidence for d in detections])
+                indices = preprocessing.non_max_suppression(boxes, nms_max_overlap, scores)
+                detections = [detections[i] for i in indices]
+
+                # Call the tracker
+                tracker.predict()
+                tracker.update(detections)
+
+                for track in tracker.tracks:
+
+                    if track.is_confirmed() and track.time_since_update >1 :
+                        continue
+
+                    bbox = track.to_tlbr()
+
+                    cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,255,255), 2)
+                    cv2.putText(frame, str(track.track_id),(int(bbox[0]), int(bbox[1])),0, 5e-3 * 200, (0,255,0),2)
+
+                for det in detections:
+                    bbox = det.to_tlbr()
+                    cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
+
+                # write processed frame to video
+                videoWriter.write(frame)
+
+            videoWriter.release()
+            video_capture.release()
+            f.close()
 
 if __name__ == '__main__':
     main(YOLO())
