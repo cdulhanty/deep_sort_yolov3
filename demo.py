@@ -49,7 +49,7 @@ def main(yolo):
     #setup output video
     outname = 'output_{}'.format(args.video)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    videoWriter = cv2.VideoWriter(outname, fourcc, vid_fps, (width, height))
+    videoWriter = cv2.VideoWriter(outname, fourcc, 30, (width, height))
 
     print(args.video +' @' + str(vid_fps) + ' fps')
 
