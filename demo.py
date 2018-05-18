@@ -25,6 +25,10 @@ warnings.filterwarnings('ignore')
 def main(yolo):
     
     args = parse_args()
+    
+    print(args.nFrames)
+    
+    print(args.video)
             
     if args.nFrames < 1:
         sys.exit(0)
