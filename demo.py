@@ -45,7 +45,7 @@ def main(yolo):
     width = int(video_capture.get(3))
     height = int(video_capture.get(4))
     vid_fps = int(video_capture.get(4)/float(args.nFrames))
-    vis_fps = 15
+    vis_fps = 30
 
     #setup output video
     outname = 'output_{}'.format(args.video)
