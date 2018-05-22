@@ -84,7 +84,7 @@ def main(yolo):
         boxs = yolo.detect_image(image)
         
         # only keep box if if box in out area
-        out_indices = []
+        out_indicies = []
         x_true = 540
         y_true = 240
         margin = 40
@@ -93,7 +93,7 @@ def main(yolo):
             if value[0] > (x_true - margin) and value[0] < (x_true + margin) and value[1] > (y_true - margin) and value[1] < (y_true + margin):
                 out_indicies.append(index)
         
-        boxs = [boxs[i] for i in out_indices]
+        boxs = [boxs[i] for i in out_indicies]
 
         features = encoder(frame,boxs)
 
