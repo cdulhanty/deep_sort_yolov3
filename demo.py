@@ -82,12 +82,24 @@ def main(yolo):
 
         image = Image.fromarray(frame)
         boxs = yolo.detect_image(image)
+        
+        # only keep box if if box in out area
+        out_indices = []
+        x_true = 540
+        y_true = 240
+        margin = 40
+        
+        for index, value in enumerate(boxs):
+            if value.x > (x_true - margin) and value.x < (x_true + margin) and value.y > (y_true - margin) and value.y < (y_true + margin):
+                out_indicies.append(index)
+        
+        boxs = [boxs[i] for i in out_indices]
 
         features = encoder(frame,boxs)
 
         # score to 1.0 here
         detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxs, features)]
-
+            
         # Run non-maxima suppression.
         boxes = np.array([d.tlwh for d in detections])
         scores = np.array([d.confidence for d in detections])
