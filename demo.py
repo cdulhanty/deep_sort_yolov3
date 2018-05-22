@@ -30,9 +30,9 @@ def main(yolo):
         sys.exit(0)
 
     # Definition of the parameters
-    max_cosine_distance = 0.3
+    max_cosine_distance = 0.5
     nn_budget = None
-    nms_max_overlap = 100.0
+    nms_max_overlap = 1.0
 
     # deep_sort 
     model_filename = 'model_data/mars-small128.pb'
