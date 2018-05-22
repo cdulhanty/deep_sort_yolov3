@@ -90,7 +90,7 @@ def main(yolo):
         margin = 40
         
         for index, value in enumerate(boxs):
-            if value.x > (x_true - margin) and value.x < (x_true + margin) and value.y > (y_true - margin) and value.y < (y_true + margin):
+            if value[0] > (x_true - margin) and value[0] < (x_true + margin) and value[1] > (y_true - margin) and value[1] < (y_true + margin):
                 out_indicies.append(index)
         
         boxs = [boxs[i] for i in out_indices]
