@@ -95,6 +95,11 @@ def main(yolo):
                 out_indicies.append(index)
         
         boxs = [boxs[i] for i in out_indicies]
+        
+        write_box = np.array([d.tlwh for d in detections])
+        
+        # write white box to frame displaying hit box
+        #cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
 
         features = encoder(frame,boxs)
 
