@@ -85,12 +85,13 @@ def main(yolo):
         
         # only keep box if if box in out area
         out_indicies = []
-        x_true = 540
-        y_true = 300
-        margin = 100
+        x_true = 600
+        x_margin = 50
+        y_true = 240
+        y_margin = 100
         
         for index, value in enumerate(boxs):
-            if value[0] > (x_true - margin) and value[0] < (x_true + margin) and value[1] > (y_true - margin) and value[1] < (y_true + margin):
+            if value[0] > (x_true - x_margin) and value[0] < (x_true + x_margin) and value[1] > (y_true - y_margin) and value[1] < (y_true + y_margin):
                 out_indicies.append(index)
         
         boxs = [boxs[i] for i in out_indicies]
