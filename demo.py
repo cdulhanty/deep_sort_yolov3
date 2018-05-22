@@ -30,7 +30,7 @@ def main(yolo):
         sys.exit(0)
 
     # Definition of the parameters
-    max_cosine_distance = 0.5
+    max_cosine_distance = 0.3
     nn_budget = None
     nms_max_overlap = 1.0
 
