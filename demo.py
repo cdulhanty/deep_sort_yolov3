@@ -98,8 +98,8 @@ def main(yolo):
         boxs = [boxs[i] for i in out_indicies]
                 
         # write white box to frame displaying hit box
-        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255,255,255), 1)
-        cv2.putText(frame, "Front of Line", (x_1, y_1), 0, 5e-3 * 200, (255,255,2525), 1)
+        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (0, 0, 0), 2)
+        cv2.putText(frame, "Front", (x_1, y_1), 0, 5e-3 * 200, (0, 0, 0), 2)
 
         features = encoder(frame,boxs)
 
