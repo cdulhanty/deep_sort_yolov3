@@ -9,7 +9,6 @@ import warnings
 import sys
 import cv2
 import csv
-import random
 import argparse
 import numpy as np
 from PIL import Image
@@ -124,11 +123,9 @@ def main(yolo):
 
             bbox = track.to_tlbr()
             
-            c1 = random.randint(0,255)
-            c2 = random.randint(0,255)
-            c3 = random.randint(0,255)
+            #
 
-            cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(c1,c2,c3), 2)
+            cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(track.c1,track.c2,track.c3), 2)
             #cv2.putText(frame, str(track.track_id),(int(bbox[0]), int(bbox[1])),0, 5e-3 * 200, (0,255,0),2)
 
         #for det in detections:
