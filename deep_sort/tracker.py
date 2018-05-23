@@ -1,6 +1,7 @@
 # vim: expandtab:ts=4:sw=4
 from __future__ import absolute_import
 import numpy as np
+import random
 from . import kalman_filter
 from . import linear_assignment
 from . import iou_matching
@@ -133,6 +134,8 @@ class Tracker:
     def _initiate_track(self, detection):
         mean, covariance = self.kf.initiate(detection.to_xyah())
         self.tracks.append(Track(
-            mean, covariance, self._next_id, self.n_init, self.max_age,
+            mean, covariance, self._next_id, self.n_init, self.max_age, self.rand_col, self.rand_col, self.rand_col,
             detection.feature))
         self._next_id += 1
+        self._rand_col = random.randint(0,255)
+
