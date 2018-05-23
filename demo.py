@@ -85,20 +85,22 @@ def main(yolo):
         
         # only keep box if if box in out area
         out_indicies = []
-        x_true = 600
-        x_margin = 50
-        y_true = 240
-        y_margin = 100
+        
+        x_1 = 550
+        x_2 = 650
+        
+        y_1 = 140
+        y_2 = 340
         
         for index, value in enumerate(boxs):
-            if value[0] > (x_true - x_margin) and value[0] < (x_true + x_margin) and value[1] > (y_true - y_margin) and value[1] < (y_true + y_margin):
+            if value[0] > x_1 and value[0] < x_2 and value[1] > y_1 and value[1] < y_2:
                 out_indicies.append(index)
         
         boxs = [boxs[i] for i in out_indicies]
-        
-        write_box = np.array([d.tlwh for d in detections])
-        
+                
         # write white box to frame displaying hit box
+        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255,0,0), 2)
+
         #cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
 
         features = encoder(frame,boxs)
