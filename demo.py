@@ -56,7 +56,7 @@ def main(yolo):
     # setup ouput csv 
     f = open('output_{}.csv'.format(args.video),'w')
     writer = csv.writer(f, delimiter=',')
-    writer.writerow(['frame_id', 'track_id' , 'x', 'y', 'w', 'h'])
+    writer.writerow(['frame_id', 'track_id'])
     f.flush()
 
     printIndex = 50
@@ -122,11 +122,10 @@ def main(yolo):
                 continue
 
             bbox = track.to_tlbr()
-            
-            #
 
             cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(track.c1,track.c2,track.c3), 2)
             #cv2.putText(frame, str(track.track_id),(int(bbox[0]), int(bbox[1])),0, 5e-3 * 200, (0,255,0),2)
+            writer.writerow([frame_index, track.track_id])
 
         for det in detections:
             bbox = det.to_tlbr()
