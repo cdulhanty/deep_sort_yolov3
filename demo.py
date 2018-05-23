@@ -86,7 +86,7 @@ def main(yolo):
         # only keep box if box in hit box area
         out_indicies = []
         
-        x_1 = 560
+        x_1 = 580
         x_2 = 640
         y_1 = 140
         y_2 = 380
