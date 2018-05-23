@@ -9,6 +9,7 @@ import warnings
 import sys
 import cv2
 import csv
+import random
 import argparse
 import numpy as np
 from PIL import Image
@@ -89,8 +90,8 @@ def main(yolo):
         x_1 = 550
         x_2 = 650
         
-        y_1 = 140
-        y_2 = 340
+        y_1 = 190
+        y_2 = 290
         
         for index, value in enumerate(boxs):
             if value[0] > x_1 and value[0] < x_2 and value[1] > y_1 and value[1] < y_2:
@@ -99,9 +100,7 @@ def main(yolo):
         boxs = [boxs[i] for i in out_indicies]
                 
         # write white box to frame displaying hit box
-        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255,0,0), 2)
-
-        #cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
+        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255,255,255), 2)
 
         features = encoder(frame,boxs)
 
@@ -124,13 +123,17 @@ def main(yolo):
                 continue
 
             bbox = track.to_tlbr()
+            
+            c1 = random.randint(0,255)
+            c2 = random.randint(0,255)
+            c3 = random.randint(0,255)
 
-            cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,255,255), 2)
-            cv2.putText(frame, str(track.track_id),(int(bbox[0]), int(bbox[1])),0, 5e-3 * 200, (0,255,0),2)
+            cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(c1,c2,c3), 2)
+            #cv2.putText(frame, str(track.track_id),(int(bbox[0]), int(bbox[1])),0, 5e-3 * 200, (0,255,0),2)
 
-        for det in detections:
-            bbox = det.to_tlbr()
-            cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
+        #for det in detections:
+            #bbox = det.to_tlbr()
+            #cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
 
         # write processed frame to video
         videoWriter.write(frame)
