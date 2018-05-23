@@ -86,11 +86,10 @@ def main(yolo):
         # only keep box if box in hit box area
         out_indicies = []
         
-        x_1 = 530
-        x_2 = 650
-        
-        y_1 = 160
-        y_2 = 360
+        x_1 = 520
+        x_2 = 640
+        y_1 = 140
+        y_2 = 380
         
         for index, value in enumerate(boxs):
             if value[0] > x_1 and value[0] < x_2 and value[1] > y_1 and value[1] < y_2:
@@ -99,7 +98,8 @@ def main(yolo):
         boxs = [boxs[i] for i in out_indicies]
                 
         # write white box to frame displaying hit box
-        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255,255,255), 2)
+        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (255,255,255), 1)
+        cv2.putText(frame, "Front of Line", (x_1, y_1), 0, 5e-3 * 200, (255,255,2525), 1)
 
         features = encoder(frame,boxs)
 
