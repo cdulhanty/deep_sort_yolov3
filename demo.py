@@ -84,13 +84,13 @@ def main(yolo):
         image = Image.fromarray(frame)
         boxs = yolo.detect_image(image)
         
-        # only keep box if if box in out area
+        # only keep box if box in hit box area
         out_indicies = []
         
-        x_1 = 550
-        x_2 = 650
+        x_1 = 540
+        x_2 = 640
         
-        y_1 = 190
+        y_1 = 140
         y_2 = 290
         
         for index, value in enumerate(boxs):
