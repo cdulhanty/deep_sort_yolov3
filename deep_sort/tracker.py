@@ -43,7 +43,7 @@ class Tracker:
         self.max_iou_distance = max_iou_distance
         self.max_age = max_age
         self.n_init = n_init
-        self._rand_col = random.randint(0,255)
+        #self._rand_col = random.randint(0,255)
 
         self.kf = kalman_filter.KalmanFilter()
         self.tracks = []
@@ -135,7 +135,7 @@ class Tracker:
     def _initiate_track(self, detection):
         mean, covariance = self.kf.initiate(detection.to_xyah())
         self.tracks.append(Track(
-            mean, covariance, self._next_id, self.n_init, self.max_age, self._rand_col, self._rand_col, self._rand_col,
+            mean, covariance, self._next_id, self.n_init, self.max_age, random.randint(0,255), random.randint(0,255), random.randint(0,255),
             detection.feature))
         self._next_id += 1
 
