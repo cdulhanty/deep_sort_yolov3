@@ -86,11 +86,11 @@ def main(yolo):
         # only keep box if box in hit box area
         out_indicies = []
         
-        x_1 = 540
-        x_2 = 640
+        x_1 = 530
+        x_2 = 650
         
-        y_1 = 180
-        y_2 = 340
+        y_1 = 160
+        y_2 = 360
         
         for index, value in enumerate(boxs):
             if value[0] > x_1 and value[0] < x_2 and value[1] > y_1 and value[1] < y_2:
