@@ -103,7 +103,7 @@ def main(yolo):
 
         # write white box to frame displaying hit box
         cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (0, 0, 0), 2)
-        cv2.putText(frame, "Front", (x_1, y_1), 0, 1, (0, 0, 0), 2) #TODO -fix font size
+        cv2.putText(frame, "Front", (x_1 - 50, y_1), 0, 1, (0, 0, 0), 2) #TODO -fix font size
 
         # only keep box if box in hit box box
         out_indicies = []
@@ -136,7 +136,7 @@ def main(yolo):
             wait_times_avg = math.ceil(wait_times_sum/len(tracker.wait_times))
         wait_times_sum = 0
 
-        cv2.putText(frame, "Avg. Move Up Time: " + str(wait_times_avg/12.) + " s", (10, 70), 0, 1, (0, 0, 0), 2)
+        cv2.putText(frame, "Avg. Move Up Time: %.2f s" % wait_times_avg/12., (10, 70), 0, 1, (0, 0, 0), 2)
 
         for track in tracker.tracks:
 
