@@ -89,15 +89,15 @@ def main(yolo):
         image = Image.fromarray(frame)
         boxs = yolo.detect_image(image)
 
-        # create moving aveage of # people detected in past 12 frames
+        # create moving aveage of # people detected in past 12 frames and put on screen
         n_people_queue.append(len(boxs))
 
         for value in n_people_queue:
             n_people_sum += value
 
-        n_people_avg = ceil(n_people_sum/len(n_people_queue))
-
-        #TODO average over frames (do this or after non-max supression)
+        n_people_avg = math.ceil(n_people_sum/len(n_people_queue))
+        n_people_sum = 0
+        
         cv2.putText(frame, "# People Detected: " + str(n_people_avg), (100, 100), 0, 1, (0, 0, 0), 2)
 
         # define hit box (front of the line)
