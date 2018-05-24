@@ -78,7 +78,7 @@ class Tracker:
 
         # Update lost_tracks dequeue #TODO check if greater than 12
         for track_idx in unmatched_tracks:
-            if self.tracks[track_idx].mark_missed():
+            if self.tracks[track_idx].mark_missed() and self.tracks[track_idx].hits > 12:
                 self.lost_tracks.append(frame_index - self.max_age)
                 print("Track lost at frame " + str(frame_index - self.max_age))
 
