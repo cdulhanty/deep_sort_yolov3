@@ -93,7 +93,7 @@ def main(yolo):
         n_people_avg = math.ceil(n_people_sum/len(n_people_queue))
         n_people_sum = 0
 
-        cv2.putText(frame, "# People Detected: " + str(n_people_avg), (10, 20), 0, 1, (0, 0, 0), 2)
+        cv2.putText(frame, "# People Detected: " + str(n_people_avg), (10, 30), 0, 1, (0, 0, 0), 2)
 
         # define hit box (front of the line)
         x_1 = 580
@@ -136,7 +136,7 @@ def main(yolo):
             wait_times_avg = math.ceil(wait_times_sum/len(tracker.wait_times))
         wait_times_sum = 0
 
-        cv2.putText(frame, "Avg. Move Up Time: " + str(wait_times_avg), (10, 60), 0, 1, (0, 0, 0), 2)
+        cv2.putText(frame, "Avg. Move Up Time: " + str(wait_times_avg/12.) + " s", (10, 70), 0, 1, (0, 0, 0), 2)
 
         for track in tracker.tracks:
 
