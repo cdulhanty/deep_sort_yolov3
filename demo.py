@@ -68,7 +68,7 @@ def main(yolo):
     fps = 0.0
 
     n_people_queue = collections.deque(maxlen=12)
-    n_people_sum
+    n_people_sum = 0.0
     n_people_avg = 0.0
 
     while True:
