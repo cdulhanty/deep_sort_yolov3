@@ -97,8 +97,8 @@ def main(yolo):
 
         n_people_avg = math.ceil(n_people_sum/len(n_people_queue))
         n_people_sum = 0
-        
-        cv2.putText(frame, "# People Detected: " + str(n_people_avg), (100, 100), 0, 1, (0, 0, 0), 2)
+
+        cv2.putText(frame, "# People Detected: " + str(n_people_avg), (10, 10), 0, 1, (0, 0, 0), 2)
 
         # define hit box (front of the line)
         x_1 = 580
