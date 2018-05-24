@@ -96,10 +96,10 @@ def main(yolo):
                 out_indicies.append(index)
         
         boxs = [boxs[i] for i in out_indicies]
-                
+        
         # write white box to frame displaying hit box
         cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (0, 0, 0), 2)
-        cv2.putText(frame, "Front", (x_1, y_1), 0, 5e-3 * 200, (0, 0, 0), 2)
+        cv2.putText(frame, "Front", (x_1, y_1), 0, 1, (0, 0, 0), 2)
 
         features = encoder(frame,boxs)
 
@@ -127,9 +127,9 @@ def main(yolo):
             #cv2.putText(frame, str(track.track_id),(int(bbox[0]), int(bbox[1])),0, 5e-3 * 200, (0,255,0),2)
             writer.writerow([frame_index, track.track_id])
 
-        for det in detections:
-            bbox = det.to_tlbr()
-            cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
+        #for det in detections:
+            #bbox = det.to_tlbr()
+            #cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
 
         # write processed frame to video
         videoWriter.write(frame)
