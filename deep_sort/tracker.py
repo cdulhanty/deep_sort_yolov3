@@ -47,7 +47,8 @@ class Tracker:
 
         self.kf = kalman_filter.KalmanFilter()
         self.tracks = []
-        self.lost_tracks = collections.deque(maxlen=5)
+        self.wait_times = collections.deque(maxlen=5)
+        self.last_lost_frame = 0
         self._next_id = 1
 
     def predict(self):
@@ -76,10 +77,17 @@ class Tracker:
             self.tracks[track_idx].update(
                 self.kf, detections[detection_idx])
 
-        # Update lost_tracks dequeue #TODO check if greater than 12
+        # Update wait_times dequeue if lost track had greater than 12 hits
         for track_idx in unmatched_tracks:
             if self.tracks[track_idx].mark_missed() and self.tracks[track_idx].hits > 12:
-                self.lost_tracks.append(frame_index - self.max_age)
+
+                lost_frame = frame_index - self.max_age
+
+                if self.last_lost_frame != 0:
+                    self.wait_times.append(lost_frame - self.last_lost_frame)
+
+                self.last_lost_frame = lost_frame
+
                 print("Track lost at frame " + str(frame_index - self.max_age))
 
         for detection_idx in unmatched_detections:
