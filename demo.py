@@ -155,11 +155,15 @@ def main(yolo):
             #bbox = det.to_tlbr()
             #cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
 
+        if frame_index == int(video_capture.get(7)):
+            cv2.putText(frame, "Total Number of People Processed: " + tracker.num_valid_tracks, (240, 220), 0, 1, (0, 0, 0), 2)
+
         # write processed frame to video
         videoWriter.write(frame)
 
         if frame_index % printIndex == 0:
             print(frame_index)
+
 
     videoWriter.release()
     video_capture.release()

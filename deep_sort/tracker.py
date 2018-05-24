@@ -48,6 +48,7 @@ class Tracker:
         self.kf = kalman_filter.KalmanFilter()
         self.tracks = []
         self.wait_times = collections.deque(maxlen=5)
+        self.num_valid_tracks = 0
         self.last_lost_frame = 0
         self._next_id = 1
 
@@ -87,6 +88,7 @@ class Tracker:
                     self.wait_times.append(lost_frame - self.last_lost_frame)
 
                 self.last_lost_frame = lost_frame
+                self.num_valid_tracks += 1
 
                 print("Track lost at frame " + str(frame_index - self.max_age))
 
