@@ -6,6 +6,7 @@ from . import kalman_filter
 from . import linear_assignment
 from . import iou_matching
 from .track import Track
+import collections
 
 
 class Tracker:
@@ -46,6 +47,7 @@ class Tracker:
 
         self.kf = kalman_filter.KalmanFilter()
         self.tracks = []
+        self.lost_tracks = collections.deque(maxlen=5)
         self._next_id = 1
 
     def predict(self):
@@ -56,7 +58,7 @@ class Tracker:
         for track in self.tracks:
             track.predict(self.kf)
 
-    def update(self, detections):
+    def update(self, detections, frame_index):
         """Perform measurement update and track management.
 
         Parameters
@@ -74,8 +76,11 @@ class Tracker:
             self.tracks[track_idx].update(
                 self.kf, detections[detection_idx])
 
+        # Update lost_tracks dequeue #TODO check if greater than 12
         for track_idx in unmatched_tracks:
-            self.tracks[track_idx].mark_missed()
+            if self.tracks[track_idx].mark_missed():
+                self.lost_tracks.append(frame_index - self.max_age)
+                print("Track lost at frame " + str(frame_index - self.max_age))
 
         for detection_idx in unmatched_detections:
             self._initiate_track(detections[detection_idx])
@@ -91,7 +96,7 @@ class Tracker:
             features += track.features
             targets += [track.track_id for _ in track.features]
             track.features = []
-            
+
         self.metric.partial_fit(
             np.asarray(features), np.asarray(targets), active_targets)
 

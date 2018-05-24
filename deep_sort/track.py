@@ -146,15 +146,16 @@ class Track:
 
     def mark_missed(self):
         """Mark this track as missed (no association at the current time step).
+           Returns 0 if track is delted b/c it was not confirmend
+           Returns 1 if track is deleted b/c tracked object left
         """
         if self.state == TrackState.Tentative:
             self.state = TrackState.Deleted
+            return 0
 
         elif self.time_since_update > self._max_age:
-            #TODO - add to a queue of last tracks here, filter >12 frames
-            # add last frame to that was tracked to a queue
-
             self.state = TrackState.Deleted
+            return 1
 
     def is_tentative(self):
         """Returns True if this track is tentative (unconfirmed).

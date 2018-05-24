@@ -28,9 +28,6 @@ def main(yolo):
 
     args = parse_args()
 
-    if args.nFrames < 1:
-        sys.exit(0)
-
     # Definition of the parameters
     max_cosine_distance = 0.3
     nn_budget = None
@@ -46,7 +43,7 @@ def main(yolo):
     video_capture = cv2.VideoCapture(args.video)
     width = int(video_capture.get(3))
     height = int(video_capture.get(4))
-    vid_fps = int(video_capture.get(5)/float(args.nFrames))
+    vid_fps = int(video_capture.get(5))
 
     #setup output video
     outname = 'output_{}'.format(args.video)
@@ -62,13 +59,11 @@ def main(yolo):
     f.flush()
 
     printIndex = 50
-    while args.nFrames != 1 and printIndex % args.nFrames == 0 :
-        printIndex += 1
 
     frame_index = 0
     fps = 0.0
 
-    n_people_queue = collections.deque(maxlen=12)
+    n_people_queue = collections.deque(maxlen=24) # TODO: confirm value here
     n_people_sum = 0.0
     n_people_avg = 0.0
 
@@ -80,9 +75,6 @@ def main(yolo):
             break;
 
         frame_index = frame_index + 1
-
-        if args.nFrames > 1 and frame_index % args.nFrames == 0:
-            continue
 
         t1 = time.time()
 
@@ -98,7 +90,7 @@ def main(yolo):
         n_people_avg = math.ceil(n_people_sum/len(n_people_queue))
         n_people_sum = 0
 
-        cv2.putText(frame, "# People Detected: " + str(n_people_avg), (10, 10), 0, 1, (0, 0, 0), 2)
+        cv2.putText(frame, "# People Detected: " + str(n_people_avg), (10, 20), 0, 1, (0, 0, 0), 2)
 
         # define hit box (front of the line)
         x_1 = 580
@@ -110,7 +102,7 @@ def main(yolo):
         cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (0, 0, 0), 2)
         cv2.putText(frame, "Front", (x_1, y_1), 0, 1, (0, 0, 0), 2) #TODO -fix font size
 
-        # only keep box if box in hit box
+        # only keep box if box in hit box box
         out_indicies = []
         for index, value in enumerate(boxs):
             if value[0] > x_1 and value[0] < x_2 and value[1] > y_1 and value[1] < y_2:
@@ -118,7 +110,7 @@ def main(yolo):
 
         boxs = [boxs[i] for i in out_indicies]
 
-        features = encoder(frame,boxs)
+        features = encoder(frame, boxs)
 
         # score to 1.0 here
         detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxs, features)]
@@ -131,7 +123,7 @@ def main(yolo):
 
         # Call the tracker
         tracker.predict()
-        tracker.update(detections)
+        tracker.update(detections, frame_index) # pass the frame_index
 
         for track in tracker.tracks:
 
@@ -167,11 +159,6 @@ def parse_args():
     parser.add_argument(
         "--video",
         help="Path to video")
-
-    parser.add_argument(
-        "--nFrames", help="Fraction of frames to run on",
-        default=1,
-        required=False)
 
     return parser.parse_args()
 
