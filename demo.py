@@ -104,7 +104,7 @@ def main(yolo):
 
         # write white box to frame displaying hit box
         cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (0, 0, 0), 2)
-        cv2.putText(frame, "FofL", (x_1, y_1-10), 0, 1, (0, 0, 0), 2) #TODO -fix font size
+        cv2.putText(frame, "FRONT", (x_1, y_1-30), 0, 1, (0, 0, 0), 2) #TODO -fix font size
 
         # only keep box if box in hit box box
         out_indicies = []
