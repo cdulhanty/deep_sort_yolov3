@@ -13,6 +13,7 @@ import argparse
 import numpy as np
 from PIL import Image
 from yolo import YOLO
+import collections
 
 from deep_sort import preprocessing
 from deep_sort import nn_matching
@@ -23,9 +24,9 @@ from deep_sort.detection import Detection as ddet
 warnings.filterwarnings('ignore')
 
 def main(yolo):
-    
+
     args = parse_args()
-    
+
     if args.nFrames < 1:
         sys.exit(0)
 
@@ -34,7 +35,7 @@ def main(yolo):
     nn_budget = None
     nms_max_overlap = 1.0
 
-    # deep_sort 
+    # deep_sort
     model_filename = 'model_data/mars-small128.pb'
     encoder = gdet.create_box_encoder(model_filename,batch_size=1)
     metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
@@ -53,7 +54,7 @@ def main(yolo):
 
     print(args.video +' @ ' + str(vid_fps) + ' fps')
 
-    # setup ouput csv 
+    # setup ouput csv
     f = open('output_{}.csv'.format(args.video),'w')
     writer = csv.writer(f, delimiter=',')
     writer.writerow(['frame_id', 'track_id'])
@@ -66,46 +67,61 @@ def main(yolo):
     frame_index = 0
     fps = 0.0
 
+    n_people_queue = collections.deque(maxlen=12)
+    n_people_sum
+    n_people_avg = 0.0
+
     while True:
 
         ret, frame = video_capture.read()  # frame shape 640*480*3
-        
+
         if ret != True:
             break;
 
         frame_index = frame_index + 1
-        
+
         if args.nFrames > 1 and frame_index % args.nFrames == 0:
             continue
 
-        t1 = time.time()    
+        t1 = time.time()
 
         image = Image.fromarray(frame)
         boxs = yolo.detect_image(image)
-        
-        # only keep box if box in hit box area
-        out_indicies = []
-        
+
+        # create moving aveage of # people detected in past 12 frames
+        n_people_queue.append(len(boxs))
+
+        for value in n_people_queue:
+            n_people_sum += value
+
+        n_people_avg = ceil(n_people_sum/len(n_people_queue))
+
+        #TODO average over frames (do this or after non-max supression)
+        cv2.putText(frame, "# People Detected: " + str(n_people_avg), (100, 100), 0, 1, (0, 0, 0), 2)
+
+        # define hit box (front of the line)
         x_1 = 580
         x_2 = 640
         y_1 = 140
         y_2 = 380
-        
+
+        # write white box to frame displaying hit box
+        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (0, 0, 0), 2)
+        cv2.putText(frame, "Front", (x_1, y_1), 0, 1, (0, 0, 0), 2) #TODO -fix font size
+
+        # only keep box if box in hit box
+        out_indicies = []
         for index, value in enumerate(boxs):
             if value[0] > x_1 and value[0] < x_2 and value[1] > y_1 and value[1] < y_2:
                 out_indicies.append(index)
-        
+
         boxs = [boxs[i] for i in out_indicies]
-        
-        # write white box to frame displaying hit box
-        cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (0, 0, 0), 2)
-        cv2.putText(frame, "Front", (x_1, y_1), 0, 1, (0, 0, 0), 2)
 
         features = encoder(frame,boxs)
 
         # score to 1.0 here
         detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxs, features)]
-            
+
         # Run non-maxima suppression.
         boxes = np.array([d.tlwh for d in detections])
         scores = np.array([d.confidence for d in detections])
@@ -140,22 +156,22 @@ def main(yolo):
     videoWriter.release()
     video_capture.release()
     f.close()
-            
+
 def parse_args():
     """
     Parse command line arguments.
     """
     parser = argparse.ArgumentParser(description="Arg. parser for yolov3 x deep_sort demo")
-    
+
     parser.add_argument(
         "--video",
         help="Path to video")
-    
+
     parser.add_argument(
         "--nFrames", help="Fraction of frames to run on",
         default=1,
         required=False)
-    
+
     return parser.parse_args()
 
 if __name__ == '__main__':

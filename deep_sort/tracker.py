@@ -43,7 +43,6 @@ class Tracker:
         self.max_iou_distance = max_iou_distance
         self.max_age = max_age
         self.n_init = n_init
-        #self._rand_col = random.randint(0,255)
 
         self.kf = kalman_filter.KalmanFilter()
         self.tracks = []
@@ -74,8 +73,10 @@ class Tracker:
         for track_idx, detection_idx in matches:
             self.tracks[track_idx].update(
                 self.kf, detections[detection_idx])
+
         for track_idx in unmatched_tracks:
             self.tracks[track_idx].mark_missed()
+
         for detection_idx in unmatched_detections:
             self._initiate_track(detections[detection_idx])
         self.tracks = [t for t in self.tracks if not t.is_deleted()]
@@ -83,12 +84,14 @@ class Tracker:
         # Update distance metric.
         active_targets = [t.track_id for t in self.tracks if t.is_confirmed()]
         features, targets = [], []
+
         for track in self.tracks:
             if not track.is_confirmed():
                 continue
             features += track.features
             targets += [track.track_id for _ in track.features]
             track.features = []
+            
         self.metric.partial_fit(
             np.asarray(features), np.asarray(targets), active_targets)
 
@@ -138,4 +141,3 @@ class Tracker:
             mean, covariance, self._next_id, self.n_init, self.max_age, random.randint(0,255), random.randint(0,255), random.randint(0,255),
             detection.feature))
         self._next_id += 1
-

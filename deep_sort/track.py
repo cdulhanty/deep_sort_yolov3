@@ -6,8 +6,7 @@ class TrackState:
     Enumeration type for the single target track state. Newly created tracks are
     classified as `tentative` until enough evidence has been collected. Then,
     the track state is changed to `confirmed`. Tracks that are no longer alive
-    are classified as `deleted` to mark them for removal from the set of active
-    tracks.
+    are classified as `deleted` to mark them for removal from the set of active tracks.
 
     """
 
@@ -63,19 +62,18 @@ class Track:
 
     """
 
-    def __init__(self, mean, covariance, track_id, n_init, max_age, c1, c2, c3,
-                 feature=None):
+    def __init__(self, mean, covariance, track_id, n_init, max_age, c1, c2, c3, feature=None):
         self.mean = mean
         self.covariance = covariance
         self.track_id = track_id
         self.hits = 1
         self.age = 1
         self.time_since_update = 0
-        
+
         self.c1 = c1
         self.c2 = c2
         self.c3 = c3
-        
+
         self.state = TrackState.Tentative
         self.features = []
         if feature is not None:
@@ -100,8 +98,7 @@ class Track:
         return ret
 
     def to_tlbr(self):
-        """Get current position in bounding box format `(min x, miny, max x,
-        max y)`.
+        """Get current position in bounding box format `(min x, miny, max x, max y)`.
 
         Returns
         -------
@@ -128,8 +125,7 @@ class Track:
         self.time_since_update += 1
 
     def update(self, kf, detection):
-        """Perform Kalman filter measurement update step and update the feature
-        cache.
+        """Perform Kalman filter measurement update step and update the feature cache.
 
         Parameters
         ----------
@@ -153,7 +149,11 @@ class Track:
         """
         if self.state == TrackState.Tentative:
             self.state = TrackState.Deleted
+
         elif self.time_since_update > self._max_age:
+            #TODO - add to a queue of last tracks here, filter >12 frames
+            # add last frame to that was tracked to a queue
+
             self.state = TrackState.Deleted
 
     def is_tentative(self):
