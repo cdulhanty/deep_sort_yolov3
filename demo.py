@@ -132,7 +132,8 @@ def main(yolo):
         for value in tracker.wait_times:
             wait_times_sum += value
 
-        wait_times_avg = math.ceil(wait_times_sum/len(tracker.wait_times))
+        if len(tracker.wait_times) > 0:
+            wait_times_avg = math.ceil(wait_times_sum/len(tracker.wait_times))
         wait_times_sum = 0
 
         cv2.putText(frame, "Avg. Move Up Time: " + str(wait_times_avg), (10, 60), 0, 1, (0, 0, 0), 2)
