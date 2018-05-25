@@ -148,6 +148,7 @@ class Track:
         """Mark this track as missed (no association at the current time step).
            Returns 0 if track is delted b/c it was not confirmend
            Returns 1 if track is deleted b/c tracked object left
+           Returns 2 otherwise
         """
         if self.state == TrackState.Tentative:
             self.state = TrackState.Deleted
