@@ -44,6 +44,7 @@ def main(yolo):
     width = int(video_capture.get(3))
     height = int(video_capture.get(4))
     vid_fps = int(video_capture.get(5))
+    n_frames = int(video_capture.get(7))
 
     #setup output video
     outname = 'output_{}'.format(args.video)
@@ -104,7 +105,7 @@ def main(yolo):
 
         # write white box to frame displaying hit box
         cv2.rectangle(frame, (x_1, y_1), (x_2, y_2), (0, 0, 0), 2)
-        cv2.putText(frame, "FRONT", (x_1-30, y_1), 0, 1, (0, 0, 0), 2) #TODO -fix font size
+        cv2.putText(frame, "FRONT", (x_1-60, y_1), 0, 1, (0, 0, 0), 2) #TODO -fix font size
 
         # only keep box if box in hit box box
         out_indicies = []
@@ -155,7 +156,7 @@ def main(yolo):
             #bbox = det.to_tlbr()
             #cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
 
-        if frame_index == int(video_capture.get(7)):
+        if frame_index + 100 > n_frames:
             cv2.putText(frame, "Total Number of People Processed: " + tracker.num_valid_tracks, (240, 220), 0, 1, (0, 0, 0), 2)
 
         # write processed frame to video
