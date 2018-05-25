@@ -73,12 +73,12 @@ class Tracker:
         matches, unmatched_tracks, unmatched_detections = \
             self._match(detections)
 
-        # Update track set.
+        # Update track set. # MATCHES
         for track_idx, detection_idx in matches:
             self.tracks[track_idx].update(
                 self.kf, detections[detection_idx])
 
-        # Update wait_times dequeue if lost track had greater than 12 hits
+        # Update wait_times dequeue if lost track had greater than 12 hits # UNMATCHED_TRACKS
         for track_idx in unmatched_tracks:
             if self.tracks[track_idx].mark_missed() and self.tracks[track_idx].hits > 12:
 
@@ -92,7 +92,7 @@ class Tracker:
 
                 print("Track lost at frame " + str(frame_index - self.max_age))
 
-        for detection_idx in unmatched_detections:
+        for detection_idx in unmatched_detections: # UNMATCHED_DETECTIONS
             self._initiate_track(detections[detection_idx])
         self.tracks = [t for t in self.tracks if not t.is_deleted()]
 
