@@ -126,9 +126,9 @@ def main(yolo):
         indices = preprocessing.non_max_suppression(boxes, nms_max_overlap, scores)
         detections = [detections[i] for i in indices]
 
-        # Call the tracker
+        # Call the tracker (the heavy lifting)
         tracker.predict()
-        tracker.update(detections, frame_index) # pass the frame_index
+        tracker.update(detections, frame_index)
 
         # Write wait time to frame
         for value in tracker.wait_times:
@@ -156,7 +156,7 @@ def main(yolo):
             #bbox = det.to_tlbr()
             #cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,0,0), 2)
 
-        if frame_index + 100 > n_frames:
+        if frame_index + 80 > n_frames:
             cv2.putText(frame, "Total # People Processed: " + str(tracker.num_valid_tracks), (10, 150), 0, 1, (0, 0, 0), 2)
 
         # write processed frame to video
@@ -164,7 +164,6 @@ def main(yolo):
 
         if frame_index % printIndex == 0:
             print(frame_index)
-
 
     videoWriter.release()
     video_capture.release()

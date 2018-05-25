@@ -157,6 +157,7 @@ class Track:
             self.state = TrackState.Deleted
             return 1
 
+
     def is_tentative(self):
         """Returns True if this track is tentative (unconfirmed).
         """
